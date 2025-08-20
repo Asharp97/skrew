@@ -1,0 +1,2172 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Turn {
+  id: ID!
+  userId: String
+  tableId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  user: User
+  Table: Table
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type HandCount {
+  CardInstance: Int!
+}
+
+type Hand {
+  id: ID!
+  userId: String
+  showto: String
+  tableId: String
+  cardInstanceId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  user: User
+  viewer: User
+  Table: Table
+  CardInstance: [CardInstance!]
+  _count: HandCount!
+}
+
+type UserCount {
+  Hands: Int!
+  visibleHands: Int!
+}
+
+type User {
+  id: ID!
+  email: String!
+  password: String!
+  name: String
+  cardCount: Int!
+  tableId: String
+  turnId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  Table: Table
+  Turn: Turn
+  Hands: [Hand!]
+  visibleHands: [Hand!]
+  _count: UserCount!
+}
+
+type TableCount {
+  user: Int!
+  Card: Int!
+  hand: Int!
+  Turn: Int!
+}
+
+type Table {
+  id: ID!
+  userId: String
+  userCount: Int!
+  status: TableStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  user: [User!]
+  Card: [CardInstance!]
+  hand: [Hand!]
+  Turn: [Turn!]
+  _count: TableCount!
+}
+
+enum TableStatus {
+  Waiting
+  Playing
+  Finished
+}
+
+type CardInstance {
+  id: ID!
+  cardId: String!
+  tableId: String
+  inDeck: Boolean!
+  inHand: Boolean!
+  ontable: Boolean!
+  discard: Boolean!
+  handId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  card: Card!
+  Table: Table
+  hand: Hand!
+}
+
+type CardCount {
+  CardInstance: Int!
+}
+
+type Card {
+  id: ID!
+  value: Int!
+  type: CardType!
+  CardInstance: [CardInstance!]
+  _count: CardCount!
+}
+
+enum CardType {
+  LowNumber
+  HighSelf
+  HighOther
+  KhodWaHat
+  KaabDayer
+  Basra
+  Polar
+}
+
+type Query {
+  GetCards: [Card!]!
+  GetCard(id: String!): Card!
+  GetCardInstances: [CardInstance!]!
+  GetCardInstance(id: String!): CardInstance!
+  GetUsers: [User!]!
+  GetUser(id: String!): User!
+  GetTurns: [Turn!]!
+  GetTurn(id: String!): Turn!
+  GetHands: [Hand!]!
+  GetHand(id: String!): Hand!
+  GetTables: [Table!]!
+  GetTable(id: String!): Table!
+}
+
+type Mutation {
+  DeleteCard(id: String!): Card!
+  UpdateCard(id: String!, data: CardUpdateInput!): Card!
+  CreateCard(data: CardUncheckedCreateInput!): Card!
+  DeleteCardInstance(id: String!): CardInstance!
+  UpdateCardInstance(id: String!, data: CardInstanceUpdateInput!): CardInstance!
+  CreateCardInstance(data: CardInstanceUncheckedCreateInput!): CardInstance!
+  DeleteUser(id: String!): User!
+  UpdateUser(id: String!, data: UserUpdateInput!): User!
+  CreateUser(data: UserUncheckedCreateInput!): User!
+  DeleteTurn(id: String!): Turn!
+  UpdateTurn(id: String!, data: TurnUpdateInput!): Turn!
+  CreateTurn(data: TurnUncheckedCreateInput!): Turn!
+  DeleteHand(id: String!): Hand!
+  UpdateHand(id: String!, data: HandUpdateInput!): Hand!
+  CreateHand(data: HandUncheckedCreateInput!): Hand!
+  DeleteTable(id: String!): Table!
+  UpdateTable(id: String!, data: TableUpdateInput!): Table!
+  CreateTable(data: TableUncheckedCreateInput!): Table!
+}
+
+input CardUpdateInput {
+  id: StringFieldUpdateOperationsInput
+  value: IntFieldUpdateOperationsInput
+  type: EnumCardTypeFieldUpdateOperationsInput
+  CardInstance: CardInstanceUpdateManyWithoutCardNestedInput
+}
+
+input StringFieldUpdateOperationsInput {
+  set: String
+}
+
+input IntFieldUpdateOperationsInput {
+  set: Int
+  increment: Int
+  decrement: Int
+  multiply: Int
+  divide: Int
+}
+
+input EnumCardTypeFieldUpdateOperationsInput {
+  set: CardType
+}
+
+input CardInstanceUpdateManyWithoutCardNestedInput {
+  create: [CardInstanceCreateWithoutCardInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutCardInput!]
+  upsert: [CardInstanceUpsertWithWhereUniqueWithoutCardInput!]
+  createMany: CardInstanceCreateManyCardInputEnvelope
+  set: [CardInstanceWhereUniqueInput!]
+  disconnect: [CardInstanceWhereUniqueInput!]
+  delete: [CardInstanceWhereUniqueInput!]
+  connect: [CardInstanceWhereUniqueInput!]
+  update: [CardInstanceUpdateWithWhereUniqueWithoutCardInput!]
+  updateMany: [CardInstanceUpdateManyWithWhereWithoutCardInput!]
+  deleteMany: [CardInstanceScalarWhereInput!]
+}
+
+input CardInstanceCreateWithoutCardInput {
+  id: String
+  inDeck: Boolean
+  inHand: Boolean
+  ontable: Boolean
+  discard: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Table: TableCreateNestedOneWithoutCardInput
+  hand: HandCreateNestedOneWithoutCardInstanceInput!
+}
+
+input TableCreateNestedOneWithoutCardInput {
+  create: TableCreateWithoutCardInput
+  connectOrCreate: TableCreateOrConnectWithoutCardInput
+  connect: TableWhereUniqueInput
+}
+
+input TableCreateWithoutCardInput {
+  id: String
+  userId: String
+  userCount: Int
+  status: TableStatus
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserCreateNestedManyWithoutTableInput
+  hand: HandCreateNestedManyWithoutTableInput
+  Turn: TurnCreateNestedManyWithoutTableInput
+}
+
+input UserCreateNestedManyWithoutTableInput {
+  create: [UserCreateWithoutTableInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutTableInput!]
+  createMany: UserCreateManyTableInputEnvelope
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateWithoutTableInput {
+  id: String
+  email: String!
+  password: String!
+  name: String
+  cardCount: Int
+  turnId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Turn: TurnCreateNestedOneWithoutUserInput
+  Hands: HandCreateNestedManyWithoutUserInput
+  visibleHands: HandCreateNestedManyWithoutViewerInput
+}
+
+input TurnCreateNestedOneWithoutUserInput {
+  create: TurnCreateWithoutUserInput
+  connectOrCreate: TurnCreateOrConnectWithoutUserInput
+  connect: TurnWhereUniqueInput
+}
+
+input TurnCreateWithoutUserInput {
+  id: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Table: TableCreateNestedOneWithoutTurnInput
+}
+
+input TableCreateNestedOneWithoutTurnInput {
+  create: TableCreateWithoutTurnInput
+  connectOrCreate: TableCreateOrConnectWithoutTurnInput
+  connect: TableWhereUniqueInput
+}
+
+input TableCreateWithoutTurnInput {
+  id: String
+  userId: String
+  userCount: Int
+  status: TableStatus
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserCreateNestedManyWithoutTableInput
+  Card: CardInstanceCreateNestedManyWithoutTableInput
+  hand: HandCreateNestedManyWithoutTableInput
+}
+
+input CardInstanceCreateNestedManyWithoutTableInput {
+  create: [CardInstanceCreateWithoutTableInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutTableInput!]
+  createMany: CardInstanceCreateManyTableInputEnvelope
+  connect: [CardInstanceWhereUniqueInput!]
+}
+
+input CardInstanceCreateWithoutTableInput {
+  id: String
+  inDeck: Boolean
+  inHand: Boolean
+  ontable: Boolean
+  discard: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  card: CardCreateNestedOneWithoutCardInstanceInput!
+  hand: HandCreateNestedOneWithoutCardInstanceInput!
+}
+
+input CardCreateNestedOneWithoutCardInstanceInput {
+  create: CardCreateWithoutCardInstanceInput
+  connectOrCreate: CardCreateOrConnectWithoutCardInstanceInput
+  connect: CardWhereUniqueInput
+}
+
+input CardCreateWithoutCardInstanceInput {
+  id: String
+  value: Int!
+  type: CardType!
+}
+
+input CardCreateOrConnectWithoutCardInstanceInput {
+  where: CardWhereUniqueInput!
+  create: CardCreateWithoutCardInstanceInput!
+}
+
+input CardWhereUniqueInput {
+  id: String
+  AND: [CardWhereInput!]
+  OR: [CardWhereInput!]
+  NOT: [CardWhereInput!]
+  value: IntFilter
+  type: EnumCardTypeFilter
+  CardInstance: CardInstanceListRelationFilter
+}
+
+input CardWhereInput {
+  AND: [CardWhereInput!]
+  OR: [CardWhereInput!]
+  NOT: [CardWhereInput!]
+  id: StringFilter
+  value: IntFilter
+  type: EnumCardTypeFilter
+  CardInstance: CardInstanceListRelationFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input EnumCardTypeFilter {
+  equals: CardType
+  in: [CardType!]
+  notIn: [CardType!]
+  not: NestedEnumCardTypeFilter
+}
+
+input NestedEnumCardTypeFilter {
+  equals: CardType
+  in: [CardType!]
+  notIn: [CardType!]
+  not: NestedEnumCardTypeFilter
+}
+
+input CardInstanceListRelationFilter {
+  every: CardInstanceWhereInput
+  some: CardInstanceWhereInput
+  none: CardInstanceWhereInput
+}
+
+input CardInstanceWhereInput {
+  AND: [CardInstanceWhereInput!]
+  OR: [CardInstanceWhereInput!]
+  NOT: [CardInstanceWhereInput!]
+  id: StringFilter
+  cardId: StringFilter
+  tableId: StringNullableFilter
+  inDeck: BoolFilter
+  inHand: BoolFilter
+  ontable: BoolFilter
+  discard: BoolFilter
+  handId: StringFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  card: CardScalarRelationFilter
+  Table: TableNullableScalarRelationFilter
+  hand: HandScalarRelationFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+}
+
+input NestedStringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringNullableFilter
+}
+
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeNullableFilter
+}
+
+input NestedDateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeNullableFilter
+}
+
+input CardScalarRelationFilter {
+  is: CardWhereInput
+  isNot: CardWhereInput
+}
+
+input TableNullableScalarRelationFilter {
+  is: TableWhereInput
+  isNot: TableWhereInput
+}
+
+input TableWhereInput {
+  AND: [TableWhereInput!]
+  OR: [TableWhereInput!]
+  NOT: [TableWhereInput!]
+  id: StringFilter
+  userId: UuidNullableFilter
+  userCount: IntFilter
+  status: EnumTableStatusFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  user: UserListRelationFilter
+  Card: CardInstanceListRelationFilter
+  hand: HandListRelationFilter
+  Turn: TurnListRelationFilter
+}
+
+input UuidNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  mode: QueryMode
+  not: NestedUuidNullableFilter
+}
+
+input NestedUuidNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: NestedUuidNullableFilter
+}
+
+input EnumTableStatusFilter {
+  equals: TableStatus
+  in: [TableStatus!]
+  notIn: [TableStatus!]
+  not: NestedEnumTableStatusFilter
+}
+
+input NestedEnumTableStatusFilter {
+  equals: TableStatus
+  in: [TableStatus!]
+  notIn: [TableStatus!]
+  not: NestedEnumTableStatusFilter
+}
+
+input UserListRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: UuidFilter
+  email: StringFilter
+  password: StringFilter
+  name: StringNullableFilter
+  cardCount: IntFilter
+  tableId: StringNullableFilter
+  turnId: UuidFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  Table: TableNullableScalarRelationFilter
+  Turn: TurnNullableScalarRelationFilter
+  Hands: HandListRelationFilter
+  visibleHands: HandListRelationFilter
+}
+
+input UuidFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  mode: QueryMode
+  not: NestedUuidFilter
+}
+
+input NestedUuidFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  not: NestedUuidFilter
+}
+
+input TurnNullableScalarRelationFilter {
+  is: TurnWhereInput
+  isNot: TurnWhereInput
+}
+
+input TurnWhereInput {
+  AND: [TurnWhereInput!]
+  OR: [TurnWhereInput!]
+  NOT: [TurnWhereInput!]
+  id: StringFilter
+  userId: UuidNullableFilter
+  tableId: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  user: UserNullableScalarRelationFilter
+  Table: TableNullableScalarRelationFilter
+}
+
+input UserNullableScalarRelationFilter {
+  is: UserWhereInput
+  isNot: UserWhereInput
+}
+
+input HandListRelationFilter {
+  every: HandWhereInput
+  some: HandWhereInput
+  none: HandWhereInput
+}
+
+input HandWhereInput {
+  AND: [HandWhereInput!]
+  OR: [HandWhereInput!]
+  NOT: [HandWhereInput!]
+  id: StringFilter
+  userId: UuidNullableFilter
+  showto: UuidNullableFilter
+  tableId: StringNullableFilter
+  cardInstanceId: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  user: UserNullableScalarRelationFilter
+  viewer: UserNullableScalarRelationFilter
+  Table: TableNullableScalarRelationFilter
+  CardInstance: CardInstanceListRelationFilter
+}
+
+input TurnListRelationFilter {
+  every: TurnWhereInput
+  some: TurnWhereInput
+  none: TurnWhereInput
+}
+
+input HandScalarRelationFilter {
+  is: HandWhereInput
+  isNot: HandWhereInput
+}
+
+input HandCreateNestedOneWithoutCardInstanceInput {
+  create: HandCreateWithoutCardInstanceInput
+  connectOrCreate: HandCreateOrConnectWithoutCardInstanceInput
+  connect: HandWhereUniqueInput
+}
+
+input HandCreateWithoutCardInstanceInput {
+  id: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserCreateNestedOneWithoutHandsInput
+  viewer: UserCreateNestedOneWithoutVisibleHandsInput
+  Table: TableCreateNestedOneWithoutHandInput
+}
+
+input UserCreateNestedOneWithoutHandsInput {
+  create: UserCreateWithoutHandsInput
+  connectOrCreate: UserCreateOrConnectWithoutHandsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutHandsInput {
+  id: String
+  email: String!
+  password: String!
+  name: String
+  cardCount: Int
+  turnId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Table: TableCreateNestedOneWithoutUserInput
+  Turn: TurnCreateNestedOneWithoutUserInput
+  visibleHands: HandCreateNestedManyWithoutViewerInput
+}
+
+input TableCreateNestedOneWithoutUserInput {
+  create: TableCreateWithoutUserInput
+  connectOrCreate: TableCreateOrConnectWithoutUserInput
+  connect: TableWhereUniqueInput
+}
+
+input TableCreateWithoutUserInput {
+  id: String
+  userId: String
+  userCount: Int
+  status: TableStatus
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Card: CardInstanceCreateNestedManyWithoutTableInput
+  hand: HandCreateNestedManyWithoutTableInput
+  Turn: TurnCreateNestedManyWithoutTableInput
+}
+
+input HandCreateNestedManyWithoutTableInput {
+  create: [HandCreateWithoutTableInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutTableInput!]
+  createMany: HandCreateManyTableInputEnvelope
+  connect: [HandWhereUniqueInput!]
+}
+
+input HandCreateWithoutTableInput {
+  id: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserCreateNestedOneWithoutHandsInput
+  viewer: UserCreateNestedOneWithoutVisibleHandsInput
+  CardInstance: CardInstanceCreateNestedManyWithoutHandInput
+}
+
+input UserCreateNestedOneWithoutVisibleHandsInput {
+  create: UserCreateWithoutVisibleHandsInput
+  connectOrCreate: UserCreateOrConnectWithoutVisibleHandsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutVisibleHandsInput {
+  id: String
+  email: String!
+  password: String!
+  name: String
+  cardCount: Int
+  turnId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Table: TableCreateNestedOneWithoutUserInput
+  Turn: TurnCreateNestedOneWithoutUserInput
+  Hands: HandCreateNestedManyWithoutUserInput
+}
+
+input HandCreateNestedManyWithoutUserInput {
+  create: [HandCreateWithoutUserInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutUserInput!]
+  createMany: HandCreateManyUserInputEnvelope
+  connect: [HandWhereUniqueInput!]
+}
+
+input HandCreateWithoutUserInput {
+  id: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  viewer: UserCreateNestedOneWithoutVisibleHandsInput
+  Table: TableCreateNestedOneWithoutHandInput
+  CardInstance: CardInstanceCreateNestedManyWithoutHandInput
+}
+
+input TableCreateNestedOneWithoutHandInput {
+  create: TableCreateWithoutHandInput
+  connectOrCreate: TableCreateOrConnectWithoutHandInput
+  connect: TableWhereUniqueInput
+}
+
+input TableCreateWithoutHandInput {
+  id: String
+  userId: String
+  userCount: Int
+  status: TableStatus
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserCreateNestedManyWithoutTableInput
+  Card: CardInstanceCreateNestedManyWithoutTableInput
+  Turn: TurnCreateNestedManyWithoutTableInput
+}
+
+input TurnCreateNestedManyWithoutTableInput {
+  create: [TurnCreateWithoutTableInput!]
+  connectOrCreate: [TurnCreateOrConnectWithoutTableInput!]
+  createMany: TurnCreateManyTableInputEnvelope
+  connect: [TurnWhereUniqueInput!]
+}
+
+input TurnCreateWithoutTableInput {
+  id: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserCreateNestedOneWithoutTurnInput
+}
+
+input UserCreateNestedOneWithoutTurnInput {
+  create: UserCreateWithoutTurnInput
+  connectOrCreate: UserCreateOrConnectWithoutTurnInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutTurnInput {
+  id: String
+  email: String!
+  password: String!
+  name: String
+  cardCount: Int
+  turnId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Table: TableCreateNestedOneWithoutUserInput
+  Hands: HandCreateNestedManyWithoutUserInput
+  visibleHands: HandCreateNestedManyWithoutViewerInput
+}
+
+input HandCreateNestedManyWithoutViewerInput {
+  create: [HandCreateWithoutViewerInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutViewerInput!]
+  createMany: HandCreateManyViewerInputEnvelope
+  connect: [HandWhereUniqueInput!]
+}
+
+input HandCreateWithoutViewerInput {
+  id: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserCreateNestedOneWithoutHandsInput
+  Table: TableCreateNestedOneWithoutHandInput
+  CardInstance: CardInstanceCreateNestedManyWithoutHandInput
+}
+
+input CardInstanceCreateNestedManyWithoutHandInput {
+  create: [CardInstanceCreateWithoutHandInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutHandInput!]
+  createMany: CardInstanceCreateManyHandInputEnvelope
+  connect: [CardInstanceWhereUniqueInput!]
+}
+
+input CardInstanceCreateWithoutHandInput {
+  id: String
+  inDeck: Boolean
+  inHand: Boolean
+  ontable: Boolean
+  discard: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  card: CardCreateNestedOneWithoutCardInstanceInput!
+  Table: TableCreateNestedOneWithoutCardInput
+}
+
+input CardInstanceCreateOrConnectWithoutHandInput {
+  where: CardInstanceWhereUniqueInput!
+  create: CardInstanceCreateWithoutHandInput!
+}
+
+input CardInstanceWhereUniqueInput {
+  id: String
+  AND: [CardInstanceWhereInput!]
+  OR: [CardInstanceWhereInput!]
+  NOT: [CardInstanceWhereInput!]
+  cardId: StringFilter
+  tableId: StringNullableFilter
+  inDeck: BoolFilter
+  inHand: BoolFilter
+  ontable: BoolFilter
+  discard: BoolFilter
+  handId: StringFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  card: CardScalarRelationFilter
+  Table: TableNullableScalarRelationFilter
+  hand: HandScalarRelationFilter
+}
+
+input CardInstanceCreateManyHandInputEnvelope {
+  data: [CardInstanceCreateManyHandInput!]!
+  skipDuplicates: Boolean
+}
+
+input CardInstanceCreateManyHandInput {
+  id: String
+  cardId: String!
+  tableId: String
+  inDeck: Boolean
+  inHand: Boolean
+  ontable: Boolean
+  discard: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input HandCreateOrConnectWithoutViewerInput {
+  where: HandWhereUniqueInput!
+  create: HandCreateWithoutViewerInput!
+}
+
+input HandWhereUniqueInput {
+  id: String
+  AND: [HandWhereInput!]
+  OR: [HandWhereInput!]
+  NOT: [HandWhereInput!]
+  userId: UuidNullableFilter
+  showto: UuidNullableFilter
+  tableId: StringNullableFilter
+  cardInstanceId: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  user: UserNullableScalarRelationFilter
+  viewer: UserNullableScalarRelationFilter
+  Table: TableNullableScalarRelationFilter
+  CardInstance: CardInstanceListRelationFilter
+}
+
+input HandCreateManyViewerInputEnvelope {
+  data: [HandCreateManyViewerInput!]!
+  skipDuplicates: Boolean
+}
+
+input HandCreateManyViewerInput {
+  id: String
+  userId: String
+  tableId: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input UserCreateOrConnectWithoutTurnInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutTurnInput!
+}
+
+input UserWhereUniqueInput {
+  id: String
+  email: String
+  turnId: String
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  password: StringFilter
+  name: StringNullableFilter
+  cardCount: IntFilter
+  tableId: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  Table: TableNullableScalarRelationFilter
+  Turn: TurnNullableScalarRelationFilter
+  Hands: HandListRelationFilter
+  visibleHands: HandListRelationFilter
+}
+
+input TurnCreateOrConnectWithoutTableInput {
+  where: TurnWhereUniqueInput!
+  create: TurnCreateWithoutTableInput!
+}
+
+input TurnWhereUniqueInput {
+  id: String
+  userId: String
+  tableId: String
+  AND: [TurnWhereInput!]
+  OR: [TurnWhereInput!]
+  NOT: [TurnWhereInput!]
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  user: UserNullableScalarRelationFilter
+  Table: TableNullableScalarRelationFilter
+}
+
+input TurnCreateManyTableInputEnvelope {
+  data: [TurnCreateManyTableInput!]!
+  skipDuplicates: Boolean
+}
+
+input TurnCreateManyTableInput {
+  id: String
+  userId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input TableCreateOrConnectWithoutHandInput {
+  where: TableWhereUniqueInput!
+  create: TableCreateWithoutHandInput!
+}
+
+input TableWhereUniqueInput {
+  id: String
+  AND: [TableWhereInput!]
+  OR: [TableWhereInput!]
+  NOT: [TableWhereInput!]
+  userId: UuidNullableFilter
+  userCount: IntFilter
+  status: EnumTableStatusFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+  user: UserListRelationFilter
+  Card: CardInstanceListRelationFilter
+  hand: HandListRelationFilter
+  Turn: TurnListRelationFilter
+}
+
+input HandCreateOrConnectWithoutUserInput {
+  where: HandWhereUniqueInput!
+  create: HandCreateWithoutUserInput!
+}
+
+input HandCreateManyUserInputEnvelope {
+  data: [HandCreateManyUserInput!]!
+  skipDuplicates: Boolean
+}
+
+input HandCreateManyUserInput {
+  id: String
+  showto: String
+  tableId: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input UserCreateOrConnectWithoutVisibleHandsInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutVisibleHandsInput!
+}
+
+input HandCreateOrConnectWithoutTableInput {
+  where: HandWhereUniqueInput!
+  create: HandCreateWithoutTableInput!
+}
+
+input HandCreateManyTableInputEnvelope {
+  data: [HandCreateManyTableInput!]!
+  skipDuplicates: Boolean
+}
+
+input HandCreateManyTableInput {
+  id: String
+  userId: String
+  showto: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input TableCreateOrConnectWithoutUserInput {
+  where: TableWhereUniqueInput!
+  create: TableCreateWithoutUserInput!
+}
+
+input UserCreateOrConnectWithoutHandsInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutHandsInput!
+}
+
+input HandCreateOrConnectWithoutCardInstanceInput {
+  where: HandWhereUniqueInput!
+  create: HandCreateWithoutCardInstanceInput!
+}
+
+input CardInstanceCreateOrConnectWithoutTableInput {
+  where: CardInstanceWhereUniqueInput!
+  create: CardInstanceCreateWithoutTableInput!
+}
+
+input CardInstanceCreateManyTableInputEnvelope {
+  data: [CardInstanceCreateManyTableInput!]!
+  skipDuplicates: Boolean
+}
+
+input CardInstanceCreateManyTableInput {
+  id: String
+  cardId: String!
+  inDeck: Boolean
+  inHand: Boolean
+  ontable: Boolean
+  discard: Boolean
+  handId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input TableCreateOrConnectWithoutTurnInput {
+  where: TableWhereUniqueInput!
+  create: TableCreateWithoutTurnInput!
+}
+
+input TurnCreateOrConnectWithoutUserInput {
+  where: TurnWhereUniqueInput!
+  create: TurnCreateWithoutUserInput!
+}
+
+input UserCreateOrConnectWithoutTableInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutTableInput!
+}
+
+input UserCreateManyTableInputEnvelope {
+  data: [UserCreateManyTableInput!]!
+  skipDuplicates: Boolean
+}
+
+input UserCreateManyTableInput {
+  id: String
+  email: String!
+  password: String!
+  name: String
+  cardCount: Int
+  turnId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input TableCreateOrConnectWithoutCardInput {
+  where: TableWhereUniqueInput!
+  create: TableCreateWithoutCardInput!
+}
+
+input CardInstanceCreateOrConnectWithoutCardInput {
+  where: CardInstanceWhereUniqueInput!
+  create: CardInstanceCreateWithoutCardInput!
+}
+
+input CardInstanceUpsertWithWhereUniqueWithoutCardInput {
+  where: CardInstanceWhereUniqueInput!
+  update: CardInstanceUpdateWithoutCardInput!
+  create: CardInstanceCreateWithoutCardInput!
+}
+
+input CardInstanceUpdateWithoutCardInput {
+  id: StringFieldUpdateOperationsInput
+  inDeck: BoolFieldUpdateOperationsInput
+  inHand: BoolFieldUpdateOperationsInput
+  ontable: BoolFieldUpdateOperationsInput
+  discard: BoolFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Table: TableUpdateOneWithoutCardNestedInput
+  hand: HandUpdateOneRequiredWithoutCardInstanceNestedInput
+}
+
+input BoolFieldUpdateOperationsInput {
+  set: Boolean
+}
+
+input DateTimeFieldUpdateOperationsInput {
+  set: DateTime
+}
+
+input NullableDateTimeFieldUpdateOperationsInput {
+  set: DateTime
+}
+
+input TableUpdateOneWithoutCardNestedInput {
+  create: TableCreateWithoutCardInput
+  connectOrCreate: TableCreateOrConnectWithoutCardInput
+  upsert: TableUpsertWithoutCardInput
+  disconnect: TableWhereInput
+  delete: TableWhereInput
+  connect: TableWhereUniqueInput
+  update: TableUpdateToOneWithWhereWithoutCardInput
+}
+
+input TableUpsertWithoutCardInput {
+  update: TableUpdateWithoutCardInput!
+  create: TableCreateWithoutCardInput!
+  where: TableWhereInput
+}
+
+input TableUpdateWithoutCardInput {
+  id: StringFieldUpdateOperationsInput
+  userId: NullableStringFieldUpdateOperationsInput
+  userCount: IntFieldUpdateOperationsInput
+  status: EnumTableStatusFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateManyWithoutTableNestedInput
+  hand: HandUpdateManyWithoutTableNestedInput
+  Turn: TurnUpdateManyWithoutTableNestedInput
+}
+
+input NullableStringFieldUpdateOperationsInput {
+  set: String
+}
+
+input EnumTableStatusFieldUpdateOperationsInput {
+  set: TableStatus
+}
+
+input UserUpdateManyWithoutTableNestedInput {
+  create: [UserCreateWithoutTableInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutTableInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutTableInput!]
+  createMany: UserCreateManyTableInputEnvelope
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutTableInput!]
+  updateMany: [UserUpdateManyWithWhereWithoutTableInput!]
+  deleteMany: [UserScalarWhereInput!]
+}
+
+input UserUpsertWithWhereUniqueWithoutTableInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutTableInput!
+  create: UserCreateWithoutTableInput!
+}
+
+input UserUpdateWithoutTableInput {
+  id: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  cardCount: IntFieldUpdateOperationsInput
+  turnId: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Turn: TurnUpdateOneWithoutUserNestedInput
+  Hands: HandUpdateManyWithoutUserNestedInput
+  visibleHands: HandUpdateManyWithoutViewerNestedInput
+}
+
+input TurnUpdateOneWithoutUserNestedInput {
+  create: TurnCreateWithoutUserInput
+  connectOrCreate: TurnCreateOrConnectWithoutUserInput
+  upsert: TurnUpsertWithoutUserInput
+  disconnect: TurnWhereInput
+  delete: TurnWhereInput
+  connect: TurnWhereUniqueInput
+  update: TurnUpdateToOneWithWhereWithoutUserInput
+}
+
+input TurnUpsertWithoutUserInput {
+  update: TurnUpdateWithoutUserInput!
+  create: TurnCreateWithoutUserInput!
+  where: TurnWhereInput
+}
+
+input TurnUpdateWithoutUserInput {
+  id: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Table: TableUpdateOneWithoutTurnNestedInput
+}
+
+input TableUpdateOneWithoutTurnNestedInput {
+  create: TableCreateWithoutTurnInput
+  connectOrCreate: TableCreateOrConnectWithoutTurnInput
+  upsert: TableUpsertWithoutTurnInput
+  disconnect: TableWhereInput
+  delete: TableWhereInput
+  connect: TableWhereUniqueInput
+  update: TableUpdateToOneWithWhereWithoutTurnInput
+}
+
+input TableUpsertWithoutTurnInput {
+  update: TableUpdateWithoutTurnInput!
+  create: TableCreateWithoutTurnInput!
+  where: TableWhereInput
+}
+
+input TableUpdateWithoutTurnInput {
+  id: StringFieldUpdateOperationsInput
+  userId: NullableStringFieldUpdateOperationsInput
+  userCount: IntFieldUpdateOperationsInput
+  status: EnumTableStatusFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateManyWithoutTableNestedInput
+  Card: CardInstanceUpdateManyWithoutTableNestedInput
+  hand: HandUpdateManyWithoutTableNestedInput
+}
+
+input CardInstanceUpdateManyWithoutTableNestedInput {
+  create: [CardInstanceCreateWithoutTableInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutTableInput!]
+  upsert: [CardInstanceUpsertWithWhereUniqueWithoutTableInput!]
+  createMany: CardInstanceCreateManyTableInputEnvelope
+  set: [CardInstanceWhereUniqueInput!]
+  disconnect: [CardInstanceWhereUniqueInput!]
+  delete: [CardInstanceWhereUniqueInput!]
+  connect: [CardInstanceWhereUniqueInput!]
+  update: [CardInstanceUpdateWithWhereUniqueWithoutTableInput!]
+  updateMany: [CardInstanceUpdateManyWithWhereWithoutTableInput!]
+  deleteMany: [CardInstanceScalarWhereInput!]
+}
+
+input CardInstanceUpsertWithWhereUniqueWithoutTableInput {
+  where: CardInstanceWhereUniqueInput!
+  update: CardInstanceUpdateWithoutTableInput!
+  create: CardInstanceCreateWithoutTableInput!
+}
+
+input CardInstanceUpdateWithoutTableInput {
+  id: StringFieldUpdateOperationsInput
+  inDeck: BoolFieldUpdateOperationsInput
+  inHand: BoolFieldUpdateOperationsInput
+  ontable: BoolFieldUpdateOperationsInput
+  discard: BoolFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  card: CardUpdateOneRequiredWithoutCardInstanceNestedInput
+  hand: HandUpdateOneRequiredWithoutCardInstanceNestedInput
+}
+
+input CardUpdateOneRequiredWithoutCardInstanceNestedInput {
+  create: CardCreateWithoutCardInstanceInput
+  connectOrCreate: CardCreateOrConnectWithoutCardInstanceInput
+  upsert: CardUpsertWithoutCardInstanceInput
+  connect: CardWhereUniqueInput
+  update: CardUpdateToOneWithWhereWithoutCardInstanceInput
+}
+
+input CardUpsertWithoutCardInstanceInput {
+  update: CardUpdateWithoutCardInstanceInput!
+  create: CardCreateWithoutCardInstanceInput!
+  where: CardWhereInput
+}
+
+input CardUpdateWithoutCardInstanceInput {
+  id: StringFieldUpdateOperationsInput
+  value: IntFieldUpdateOperationsInput
+  type: EnumCardTypeFieldUpdateOperationsInput
+}
+
+input CardUpdateToOneWithWhereWithoutCardInstanceInput {
+  where: CardWhereInput
+  data: CardUpdateWithoutCardInstanceInput!
+}
+
+input HandUpdateOneRequiredWithoutCardInstanceNestedInput {
+  create: HandCreateWithoutCardInstanceInput
+  connectOrCreate: HandCreateOrConnectWithoutCardInstanceInput
+  upsert: HandUpsertWithoutCardInstanceInput
+  connect: HandWhereUniqueInput
+  update: HandUpdateToOneWithWhereWithoutCardInstanceInput
+}
+
+input HandUpsertWithoutCardInstanceInput {
+  update: HandUpdateWithoutCardInstanceInput!
+  create: HandCreateWithoutCardInstanceInput!
+  where: HandWhereInput
+}
+
+input HandUpdateWithoutCardInstanceInput {
+  id: StringFieldUpdateOperationsInput
+  cardInstanceId: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutHandsNestedInput
+  viewer: UserUpdateOneWithoutVisibleHandsNestedInput
+  Table: TableUpdateOneWithoutHandNestedInput
+}
+
+input UserUpdateOneWithoutHandsNestedInput {
+  create: UserCreateWithoutHandsInput
+  connectOrCreate: UserCreateOrConnectWithoutHandsInput
+  upsert: UserUpsertWithoutHandsInput
+  disconnect: UserWhereInput
+  delete: UserWhereInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateToOneWithWhereWithoutHandsInput
+}
+
+input UserUpsertWithoutHandsInput {
+  update: UserUpdateWithoutHandsInput!
+  create: UserCreateWithoutHandsInput!
+  where: UserWhereInput
+}
+
+input UserUpdateWithoutHandsInput {
+  id: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  cardCount: IntFieldUpdateOperationsInput
+  turnId: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Table: TableUpdateOneWithoutUserNestedInput
+  Turn: TurnUpdateOneWithoutUserNestedInput
+  visibleHands: HandUpdateManyWithoutViewerNestedInput
+}
+
+input TableUpdateOneWithoutUserNestedInput {
+  create: TableCreateWithoutUserInput
+  connectOrCreate: TableCreateOrConnectWithoutUserInput
+  upsert: TableUpsertWithoutUserInput
+  disconnect: TableWhereInput
+  delete: TableWhereInput
+  connect: TableWhereUniqueInput
+  update: TableUpdateToOneWithWhereWithoutUserInput
+}
+
+input TableUpsertWithoutUserInput {
+  update: TableUpdateWithoutUserInput!
+  create: TableCreateWithoutUserInput!
+  where: TableWhereInput
+}
+
+input TableUpdateWithoutUserInput {
+  id: StringFieldUpdateOperationsInput
+  userId: NullableStringFieldUpdateOperationsInput
+  userCount: IntFieldUpdateOperationsInput
+  status: EnumTableStatusFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Card: CardInstanceUpdateManyWithoutTableNestedInput
+  hand: HandUpdateManyWithoutTableNestedInput
+  Turn: TurnUpdateManyWithoutTableNestedInput
+}
+
+input HandUpdateManyWithoutTableNestedInput {
+  create: [HandCreateWithoutTableInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutTableInput!]
+  upsert: [HandUpsertWithWhereUniqueWithoutTableInput!]
+  createMany: HandCreateManyTableInputEnvelope
+  set: [HandWhereUniqueInput!]
+  disconnect: [HandWhereUniqueInput!]
+  delete: [HandWhereUniqueInput!]
+  connect: [HandWhereUniqueInput!]
+  update: [HandUpdateWithWhereUniqueWithoutTableInput!]
+  updateMany: [HandUpdateManyWithWhereWithoutTableInput!]
+  deleteMany: [HandScalarWhereInput!]
+}
+
+input HandUpsertWithWhereUniqueWithoutTableInput {
+  where: HandWhereUniqueInput!
+  update: HandUpdateWithoutTableInput!
+  create: HandCreateWithoutTableInput!
+}
+
+input HandUpdateWithoutTableInput {
+  id: StringFieldUpdateOperationsInput
+  cardInstanceId: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutHandsNestedInput
+  viewer: UserUpdateOneWithoutVisibleHandsNestedInput
+  CardInstance: CardInstanceUpdateManyWithoutHandNestedInput
+}
+
+input UserUpdateOneWithoutVisibleHandsNestedInput {
+  create: UserCreateWithoutVisibleHandsInput
+  connectOrCreate: UserCreateOrConnectWithoutVisibleHandsInput
+  upsert: UserUpsertWithoutVisibleHandsInput
+  disconnect: UserWhereInput
+  delete: UserWhereInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateToOneWithWhereWithoutVisibleHandsInput
+}
+
+input UserUpsertWithoutVisibleHandsInput {
+  update: UserUpdateWithoutVisibleHandsInput!
+  create: UserCreateWithoutVisibleHandsInput!
+  where: UserWhereInput
+}
+
+input UserUpdateWithoutVisibleHandsInput {
+  id: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  cardCount: IntFieldUpdateOperationsInput
+  turnId: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Table: TableUpdateOneWithoutUserNestedInput
+  Turn: TurnUpdateOneWithoutUserNestedInput
+  Hands: HandUpdateManyWithoutUserNestedInput
+}
+
+input HandUpdateManyWithoutUserNestedInput {
+  create: [HandCreateWithoutUserInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutUserInput!]
+  upsert: [HandUpsertWithWhereUniqueWithoutUserInput!]
+  createMany: HandCreateManyUserInputEnvelope
+  set: [HandWhereUniqueInput!]
+  disconnect: [HandWhereUniqueInput!]
+  delete: [HandWhereUniqueInput!]
+  connect: [HandWhereUniqueInput!]
+  update: [HandUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [HandUpdateManyWithWhereWithoutUserInput!]
+  deleteMany: [HandScalarWhereInput!]
+}
+
+input HandUpsertWithWhereUniqueWithoutUserInput {
+  where: HandWhereUniqueInput!
+  update: HandUpdateWithoutUserInput!
+  create: HandCreateWithoutUserInput!
+}
+
+input HandUpdateWithoutUserInput {
+  id: StringFieldUpdateOperationsInput
+  cardInstanceId: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  viewer: UserUpdateOneWithoutVisibleHandsNestedInput
+  Table: TableUpdateOneWithoutHandNestedInput
+  CardInstance: CardInstanceUpdateManyWithoutHandNestedInput
+}
+
+input TableUpdateOneWithoutHandNestedInput {
+  create: TableCreateWithoutHandInput
+  connectOrCreate: TableCreateOrConnectWithoutHandInput
+  upsert: TableUpsertWithoutHandInput
+  disconnect: TableWhereInput
+  delete: TableWhereInput
+  connect: TableWhereUniqueInput
+  update: TableUpdateToOneWithWhereWithoutHandInput
+}
+
+input TableUpsertWithoutHandInput {
+  update: TableUpdateWithoutHandInput!
+  create: TableCreateWithoutHandInput!
+  where: TableWhereInput
+}
+
+input TableUpdateWithoutHandInput {
+  id: StringFieldUpdateOperationsInput
+  userId: NullableStringFieldUpdateOperationsInput
+  userCount: IntFieldUpdateOperationsInput
+  status: EnumTableStatusFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateManyWithoutTableNestedInput
+  Card: CardInstanceUpdateManyWithoutTableNestedInput
+  Turn: TurnUpdateManyWithoutTableNestedInput
+}
+
+input TurnUpdateManyWithoutTableNestedInput {
+  create: [TurnCreateWithoutTableInput!]
+  connectOrCreate: [TurnCreateOrConnectWithoutTableInput!]
+  upsert: [TurnUpsertWithWhereUniqueWithoutTableInput!]
+  createMany: TurnCreateManyTableInputEnvelope
+  set: [TurnWhereUniqueInput!]
+  disconnect: [TurnWhereUniqueInput!]
+  delete: [TurnWhereUniqueInput!]
+  connect: [TurnWhereUniqueInput!]
+  update: [TurnUpdateWithWhereUniqueWithoutTableInput!]
+  updateMany: [TurnUpdateManyWithWhereWithoutTableInput!]
+  deleteMany: [TurnScalarWhereInput!]
+}
+
+input TurnUpsertWithWhereUniqueWithoutTableInput {
+  where: TurnWhereUniqueInput!
+  update: TurnUpdateWithoutTableInput!
+  create: TurnCreateWithoutTableInput!
+}
+
+input TurnUpdateWithoutTableInput {
+  id: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutTurnNestedInput
+}
+
+input UserUpdateOneWithoutTurnNestedInput {
+  create: UserCreateWithoutTurnInput
+  connectOrCreate: UserCreateOrConnectWithoutTurnInput
+  upsert: UserUpsertWithoutTurnInput
+  disconnect: UserWhereInput
+  delete: UserWhereInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateToOneWithWhereWithoutTurnInput
+}
+
+input UserUpsertWithoutTurnInput {
+  update: UserUpdateWithoutTurnInput!
+  create: UserCreateWithoutTurnInput!
+  where: UserWhereInput
+}
+
+input UserUpdateWithoutTurnInput {
+  id: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  cardCount: IntFieldUpdateOperationsInput
+  turnId: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Table: TableUpdateOneWithoutUserNestedInput
+  Hands: HandUpdateManyWithoutUserNestedInput
+  visibleHands: HandUpdateManyWithoutViewerNestedInput
+}
+
+input HandUpdateManyWithoutViewerNestedInput {
+  create: [HandCreateWithoutViewerInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutViewerInput!]
+  upsert: [HandUpsertWithWhereUniqueWithoutViewerInput!]
+  createMany: HandCreateManyViewerInputEnvelope
+  set: [HandWhereUniqueInput!]
+  disconnect: [HandWhereUniqueInput!]
+  delete: [HandWhereUniqueInput!]
+  connect: [HandWhereUniqueInput!]
+  update: [HandUpdateWithWhereUniqueWithoutViewerInput!]
+  updateMany: [HandUpdateManyWithWhereWithoutViewerInput!]
+  deleteMany: [HandScalarWhereInput!]
+}
+
+input HandUpsertWithWhereUniqueWithoutViewerInput {
+  where: HandWhereUniqueInput!
+  update: HandUpdateWithoutViewerInput!
+  create: HandCreateWithoutViewerInput!
+}
+
+input HandUpdateWithoutViewerInput {
+  id: StringFieldUpdateOperationsInput
+  cardInstanceId: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutHandsNestedInput
+  Table: TableUpdateOneWithoutHandNestedInput
+  CardInstance: CardInstanceUpdateManyWithoutHandNestedInput
+}
+
+input CardInstanceUpdateManyWithoutHandNestedInput {
+  create: [CardInstanceCreateWithoutHandInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutHandInput!]
+  upsert: [CardInstanceUpsertWithWhereUniqueWithoutHandInput!]
+  createMany: CardInstanceCreateManyHandInputEnvelope
+  set: [CardInstanceWhereUniqueInput!]
+  disconnect: [CardInstanceWhereUniqueInput!]
+  delete: [CardInstanceWhereUniqueInput!]
+  connect: [CardInstanceWhereUniqueInput!]
+  update: [CardInstanceUpdateWithWhereUniqueWithoutHandInput!]
+  updateMany: [CardInstanceUpdateManyWithWhereWithoutHandInput!]
+  deleteMany: [CardInstanceScalarWhereInput!]
+}
+
+input CardInstanceUpsertWithWhereUniqueWithoutHandInput {
+  where: CardInstanceWhereUniqueInput!
+  update: CardInstanceUpdateWithoutHandInput!
+  create: CardInstanceCreateWithoutHandInput!
+}
+
+input CardInstanceUpdateWithoutHandInput {
+  id: StringFieldUpdateOperationsInput
+  inDeck: BoolFieldUpdateOperationsInput
+  inHand: BoolFieldUpdateOperationsInput
+  ontable: BoolFieldUpdateOperationsInput
+  discard: BoolFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  card: CardUpdateOneRequiredWithoutCardInstanceNestedInput
+  Table: TableUpdateOneWithoutCardNestedInput
+}
+
+input CardInstanceUpdateWithWhereUniqueWithoutHandInput {
+  where: CardInstanceWhereUniqueInput!
+  data: CardInstanceUpdateWithoutHandInput!
+}
+
+input CardInstanceUpdateManyWithWhereWithoutHandInput {
+  where: CardInstanceScalarWhereInput!
+  data: CardInstanceUpdateManyMutationInput!
+}
+
+input CardInstanceScalarWhereInput {
+  AND: [CardInstanceScalarWhereInput!]
+  OR: [CardInstanceScalarWhereInput!]
+  NOT: [CardInstanceScalarWhereInput!]
+  id: StringFilter
+  cardId: StringFilter
+  tableId: StringNullableFilter
+  inDeck: BoolFilter
+  inHand: BoolFilter
+  ontable: BoolFilter
+  discard: BoolFilter
+  handId: StringFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+}
+
+input CardInstanceUpdateManyMutationInput {
+  id: StringFieldUpdateOperationsInput
+  inDeck: BoolFieldUpdateOperationsInput
+  inHand: BoolFieldUpdateOperationsInput
+  ontable: BoolFieldUpdateOperationsInput
+  discard: BoolFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+}
+
+input HandUpdateWithWhereUniqueWithoutViewerInput {
+  where: HandWhereUniqueInput!
+  data: HandUpdateWithoutViewerInput!
+}
+
+input HandUpdateManyWithWhereWithoutViewerInput {
+  where: HandScalarWhereInput!
+  data: HandUpdateManyMutationInput!
+}
+
+input HandScalarWhereInput {
+  AND: [HandScalarWhereInput!]
+  OR: [HandScalarWhereInput!]
+  NOT: [HandScalarWhereInput!]
+  id: StringFilter
+  userId: UuidNullableFilter
+  showto: UuidNullableFilter
+  tableId: StringNullableFilter
+  cardInstanceId: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+}
+
+input HandUpdateManyMutationInput {
+  id: StringFieldUpdateOperationsInput
+  cardInstanceId: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+}
+
+input UserUpdateToOneWithWhereWithoutTurnInput {
+  where: UserWhereInput
+  data: UserUpdateWithoutTurnInput!
+}
+
+input TurnUpdateWithWhereUniqueWithoutTableInput {
+  where: TurnWhereUniqueInput!
+  data: TurnUpdateWithoutTableInput!
+}
+
+input TurnUpdateManyWithWhereWithoutTableInput {
+  where: TurnScalarWhereInput!
+  data: TurnUpdateManyMutationInput!
+}
+
+input TurnScalarWhereInput {
+  AND: [TurnScalarWhereInput!]
+  OR: [TurnScalarWhereInput!]
+  NOT: [TurnScalarWhereInput!]
+  id: StringFilter
+  userId: UuidNullableFilter
+  tableId: StringNullableFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+}
+
+input TurnUpdateManyMutationInput {
+  id: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+}
+
+input TableUpdateToOneWithWhereWithoutHandInput {
+  where: TableWhereInput
+  data: TableUpdateWithoutHandInput!
+}
+
+input HandUpdateWithWhereUniqueWithoutUserInput {
+  where: HandWhereUniqueInput!
+  data: HandUpdateWithoutUserInput!
+}
+
+input HandUpdateManyWithWhereWithoutUserInput {
+  where: HandScalarWhereInput!
+  data: HandUpdateManyMutationInput!
+}
+
+input UserUpdateToOneWithWhereWithoutVisibleHandsInput {
+  where: UserWhereInput
+  data: UserUpdateWithoutVisibleHandsInput!
+}
+
+input HandUpdateWithWhereUniqueWithoutTableInput {
+  where: HandWhereUniqueInput!
+  data: HandUpdateWithoutTableInput!
+}
+
+input HandUpdateManyWithWhereWithoutTableInput {
+  where: HandScalarWhereInput!
+  data: HandUpdateManyMutationInput!
+}
+
+input TableUpdateToOneWithWhereWithoutUserInput {
+  where: TableWhereInput
+  data: TableUpdateWithoutUserInput!
+}
+
+input UserUpdateToOneWithWhereWithoutHandsInput {
+  where: UserWhereInput
+  data: UserUpdateWithoutHandsInput!
+}
+
+input HandUpdateToOneWithWhereWithoutCardInstanceInput {
+  where: HandWhereInput
+  data: HandUpdateWithoutCardInstanceInput!
+}
+
+input CardInstanceUpdateWithWhereUniqueWithoutTableInput {
+  where: CardInstanceWhereUniqueInput!
+  data: CardInstanceUpdateWithoutTableInput!
+}
+
+input CardInstanceUpdateManyWithWhereWithoutTableInput {
+  where: CardInstanceScalarWhereInput!
+  data: CardInstanceUpdateManyMutationInput!
+}
+
+input TableUpdateToOneWithWhereWithoutTurnInput {
+  where: TableWhereInput
+  data: TableUpdateWithoutTurnInput!
+}
+
+input TurnUpdateToOneWithWhereWithoutUserInput {
+  where: TurnWhereInput
+  data: TurnUpdateWithoutUserInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutTableInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutTableInput!
+}
+
+input UserUpdateManyWithWhereWithoutTableInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyMutationInput!
+}
+
+input UserScalarWhereInput {
+  AND: [UserScalarWhereInput!]
+  OR: [UserScalarWhereInput!]
+  NOT: [UserScalarWhereInput!]
+  id: UuidFilter
+  email: StringFilter
+  password: StringFilter
+  name: StringNullableFilter
+  cardCount: IntFilter
+  tableId: StringNullableFilter
+  turnId: UuidFilter
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  deletedAt: DateTimeNullableFilter
+}
+
+input UserUpdateManyMutationInput {
+  id: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  cardCount: IntFieldUpdateOperationsInput
+  turnId: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+}
+
+input TableUpdateToOneWithWhereWithoutCardInput {
+  where: TableWhereInput
+  data: TableUpdateWithoutCardInput!
+}
+
+input CardInstanceCreateManyCardInputEnvelope {
+  data: [CardInstanceCreateManyCardInput!]!
+  skipDuplicates: Boolean
+}
+
+input CardInstanceCreateManyCardInput {
+  id: String
+  tableId: String
+  inDeck: Boolean
+  inHand: Boolean
+  ontable: Boolean
+  discard: Boolean
+  handId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input CardInstanceUpdateWithWhereUniqueWithoutCardInput {
+  where: CardInstanceWhereUniqueInput!
+  data: CardInstanceUpdateWithoutCardInput!
+}
+
+input CardInstanceUpdateManyWithWhereWithoutCardInput {
+  where: CardInstanceScalarWhereInput!
+  data: CardInstanceUpdateManyMutationInput!
+}
+
+input CardUncheckedCreateInput {
+  id: String
+  value: Int!
+  type: CardType!
+  CardInstance: CardInstanceUncheckedCreateNestedManyWithoutCardInput
+}
+
+input CardInstanceUncheckedCreateNestedManyWithoutCardInput {
+  create: [CardInstanceCreateWithoutCardInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutCardInput!]
+  createMany: CardInstanceCreateManyCardInputEnvelope
+  connect: [CardInstanceWhereUniqueInput!]
+}
+
+input CardInstanceUpdateInput {
+  id: StringFieldUpdateOperationsInput
+  inDeck: BoolFieldUpdateOperationsInput
+  inHand: BoolFieldUpdateOperationsInput
+  ontable: BoolFieldUpdateOperationsInput
+  discard: BoolFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  card: CardUpdateOneRequiredWithoutCardInstanceNestedInput
+  Table: TableUpdateOneWithoutCardNestedInput
+  hand: HandUpdateOneRequiredWithoutCardInstanceNestedInput
+}
+
+input CardInstanceUncheckedCreateInput {
+  id: String
+  cardId: String!
+  tableId: String
+  inDeck: Boolean
+  inHand: Boolean
+  ontable: Boolean
+  discard: Boolean
+  handId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input UserUpdateInput {
+  id: StringFieldUpdateOperationsInput
+  email: StringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
+  name: NullableStringFieldUpdateOperationsInput
+  cardCount: IntFieldUpdateOperationsInput
+  turnId: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  Table: TableUpdateOneWithoutUserNestedInput
+  Turn: TurnUpdateOneWithoutUserNestedInput
+  Hands: HandUpdateManyWithoutUserNestedInput
+  visibleHands: HandUpdateManyWithoutViewerNestedInput
+}
+
+input UserUncheckedCreateInput {
+  id: String
+  email: String!
+  password: String!
+  name: String
+  cardCount: Int
+  tableId: String
+  turnId: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  Turn: TurnUncheckedCreateNestedOneWithoutUserInput
+  Hands: HandUncheckedCreateNestedManyWithoutUserInput
+  visibleHands: HandUncheckedCreateNestedManyWithoutViewerInput
+}
+
+input TurnUncheckedCreateNestedOneWithoutUserInput {
+  create: TurnCreateWithoutUserInput
+  connectOrCreate: TurnCreateOrConnectWithoutUserInput
+  connect: TurnWhereUniqueInput
+}
+
+input HandUncheckedCreateNestedManyWithoutUserInput {
+  create: [HandCreateWithoutUserInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutUserInput!]
+  createMany: HandCreateManyUserInputEnvelope
+  connect: [HandWhereUniqueInput!]
+}
+
+input HandUncheckedCreateNestedManyWithoutViewerInput {
+  create: [HandCreateWithoutViewerInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutViewerInput!]
+  createMany: HandCreateManyViewerInputEnvelope
+  connect: [HandWhereUniqueInput!]
+}
+
+input TurnUpdateInput {
+  id: StringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutTurnNestedInput
+  Table: TableUpdateOneWithoutTurnNestedInput
+}
+
+input TurnUncheckedCreateInput {
+  id: String
+  userId: String
+  tableId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+}
+
+input HandUpdateInput {
+  id: StringFieldUpdateOperationsInput
+  cardInstanceId: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutHandsNestedInput
+  viewer: UserUpdateOneWithoutVisibleHandsNestedInput
+  Table: TableUpdateOneWithoutHandNestedInput
+  CardInstance: CardInstanceUpdateManyWithoutHandNestedInput
+}
+
+input HandUncheckedCreateInput {
+  id: String
+  userId: String
+  showto: String
+  tableId: String
+  cardInstanceId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  CardInstance: CardInstanceUncheckedCreateNestedManyWithoutHandInput
+}
+
+input CardInstanceUncheckedCreateNestedManyWithoutHandInput {
+  create: [CardInstanceCreateWithoutHandInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutHandInput!]
+  createMany: CardInstanceCreateManyHandInputEnvelope
+  connect: [CardInstanceWhereUniqueInput!]
+}
+
+input TableUpdateInput {
+  id: StringFieldUpdateOperationsInput
+  userId: NullableStringFieldUpdateOperationsInput
+  userCount: IntFieldUpdateOperationsInput
+  status: EnumTableStatusFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  deletedAt: NullableDateTimeFieldUpdateOperationsInput
+  user: UserUpdateManyWithoutTableNestedInput
+  Card: CardInstanceUpdateManyWithoutTableNestedInput
+  hand: HandUpdateManyWithoutTableNestedInput
+  Turn: TurnUpdateManyWithoutTableNestedInput
+}
+
+input TableUncheckedCreateInput {
+  id: String
+  userId: String
+  userCount: Int
+  status: TableStatus
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  user: UserUncheckedCreateNestedManyWithoutTableInput
+  Card: CardInstanceUncheckedCreateNestedManyWithoutTableInput
+  hand: HandUncheckedCreateNestedManyWithoutTableInput
+  Turn: TurnUncheckedCreateNestedManyWithoutTableInput
+}
+
+input UserUncheckedCreateNestedManyWithoutTableInput {
+  create: [UserCreateWithoutTableInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutTableInput!]
+  createMany: UserCreateManyTableInputEnvelope
+  connect: [UserWhereUniqueInput!]
+}
+
+input CardInstanceUncheckedCreateNestedManyWithoutTableInput {
+  create: [CardInstanceCreateWithoutTableInput!]
+  connectOrCreate: [CardInstanceCreateOrConnectWithoutTableInput!]
+  createMany: CardInstanceCreateManyTableInputEnvelope
+  connect: [CardInstanceWhereUniqueInput!]
+}
+
+input HandUncheckedCreateNestedManyWithoutTableInput {
+  create: [HandCreateWithoutTableInput!]
+  connectOrCreate: [HandCreateOrConnectWithoutTableInput!]
+  createMany: HandCreateManyTableInputEnvelope
+  connect: [HandWhereUniqueInput!]
+}
+
+input TurnUncheckedCreateNestedManyWithoutTableInput {
+  create: [TurnCreateWithoutTableInput!]
+  connectOrCreate: [TurnCreateOrConnectWithoutTableInput!]
+  createMany: TurnCreateManyTableInputEnvelope
+  connect: [TurnWhereUniqueInput!]
+}

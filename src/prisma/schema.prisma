@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "relationJoins", "nativeDistinct", "prismaSchemaFolder", "multiSchema"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [hstore(schema: "public"), pg_trgm, uuidOssp(map: "uuid-ossp")]
+}
+
+generator nestgraphql {
+  provider = "prisma-nestjs-graphql"
+  output   = "../../types"
+}
+
+model User {
+  id           String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email        String  @unique
+  password     String
+  name         String?
+  cardCount    Int     @default(4)
+  Table        Table?  @relation(fields: [tableId], references: [id])
+  tableId      String?
+  Turn         Turn?
+  Hands        Hand[]  @relation("HandOwner")
+  visibleHands Hand[]  @relation("HandViewer")
+  turnId       String  @unique @db.Uuid
+
+  createdAt DateTime  @default(now()) @db.Timestamptz
+  updatedAt DateTime  @updatedAt @db.Timestamptz
+  deletedAt DateTime? @db.Timestamptz
+}
+
+model Card {
+  id           String         @id @default(uuid())
+  value        Int
+  type         CardType
+  CardInstance CardInstance[]
+}
+
+model CardInstance {
+  id      String  @id @default(uuid())
+  cardId  String
+  card    Card    @relation(fields: [cardId], references: [id])
+  tableId String?
+  Table   Table?  @relation(fields: [tableId], references: [id])
+  inDeck  Boolean @default(true)
+  inHand  Boolean @default(false)
+  ontable Boolean @default(false)
+  discard Boolean @default(false)
+  hand    Hand    @relation(fields: [handId], references: [id])
+  handId  String
+
+  createdAt DateTime  @default(now()) @db.Timestamptz
+  updatedAt DateTime  @updatedAt @db.Timestamptz
+  deletedAt DateTime? @db.Timestamptz
+}
+
+model Hand {
+  id             String         @id @default(uuid())
+  userId         String?        @db.Uuid
+  user           User?          @relation("HandOwner", fields: [userId], references: [id])
+  showto         String?        @db.Uuid
+  viewer         User?          @relation("HandViewer", fields: [showto], references: [id])
+  tableId        String?
+  Table          Table?         @relation(fields: [tableId], references: [id])
+  cardInstanceId String?
+  CardInstance   CardInstance[]
+
+  createdAt DateTime  @default(now()) @db.Timestamptz
+  updatedAt DateTime  @updatedAt @db.Timestamptz
+  deletedAt DateTime? @db.Timestamptz
+}
+
+model Turn {
+  id      String  @id @default(uuid())
+  userId  String? @unique @db.Uuid
+  user    User?   @relation(fields: [userId], references: [id])
+  tableId String? @unique
+  Table   Table?  @relation(fields: [tableId], references: [id])
+
+  createdAt DateTime  @default(now()) @db.Timestamptz
+  updatedAt DateTime  @updatedAt @db.Timestamptz
+  deletedAt DateTime? @db.Timestamptz
+}
+
+model Table {
+  id        String         @id @default(uuid())
+  userId    String?        @db.Uuid
+  user      User[]
+  userCount Int            @default(0)
+  status    TableStatus    @default(Waiting)
+  Card      CardInstance[]
+  hand      Hand[]
+  Turn      Turn[]
+
+  createdAt DateTime  @default(now()) @db.Timestamptz
+  updatedAt DateTime  @updatedAt @db.Timestamptz
+  deletedAt DateTime? @db.Timestamptz
+}
+
+enum TableStatus {
+  Waiting
+  Playing
+  Finished
+}
+
+enum CardType {
+  LowNumber
+  HighSelf
+  HighOther
+  KhodWaHat
+  KaabDayer
+  Basra
+  Polar
+}
