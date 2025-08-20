@@ -21,17 +21,19 @@ generator nestgraphql {
 }
 
 model User {
-  id           String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  email        String  @unique
-  password     String
-  name         String?
-  cardCount    Int     @default(4)
+  id       String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email    String @unique
+  /// @HideField
+  password String
+  name     String
+
+  cardCount    Int?
   Table        Table?  @relation(fields: [tableId], references: [id])
   tableId      String?
   Turn         Turn?
   Hands        Hand[]  @relation("HandOwner")
   visibleHands Hand[]  @relation("HandViewer")
-  turnId       String  @unique @db.Uuid
+  turnId       String? @db.Uuid
 
   createdAt DateTime  @default(now()) @db.Timestamptz
   updatedAt DateTime  @updatedAt @db.Timestamptz

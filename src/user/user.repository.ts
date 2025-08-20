@@ -33,4 +33,8 @@ export class UserRepository {
   async createUser(data: Prisma.UserUncheckedCreateInput): Promise<User> {
     return this.prisma.user.create({ data });
   }
+
+  async getUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findFirst({ where: { email, deletedAt: null } });
+  }
 }

@@ -1,10 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 import { UserRepository } from './user.repository';
+import { hash, compare } from 'bcryptjs';
+import { signUpRequestDTO } from './dto/signupRequest.dto';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { v4 } from 'uuid';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import { Redis } from 'ioredis';
+import { authResponseDTO } from './dto/authResponse.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private repo: UserRepository) {}
+  private readonly redis: Redis;
+  constructor(
+    private readonly repo: UserRepository,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
+  ) {
+    this.redis = this.redisService.getOrThrow();
+  }
   async getUsers(): Promise<User[]> {
     return await this.repo.getUsers();
   }
@@ -26,5 +42,98 @@ export class UserService {
 
   async createUser(data: Prisma.UserUncheckedCreateInput): Promise<User> {
     return await this.repo.createUser(data);
+  }
+
+  async getUserByEmail(email: string): Promise<User | null> {
+    return this.repo.getUserByEmail(email);
+  }
+
+  async signUp(data: signUpRequestDTO): Promise<authResponseDTO> {
+    if (!data.email || !data.password) {
+      throw new Error('Email and password are required');
+    }
+    data.email = data.email.toLowerCase();
+    const existingUser = await this.repo.getUserByEmail(data.email);
+    if (existingUser) {
+      throw new Error('User with this email already exists');
+    }
+    data.password = await hash(data.password, 10);
+    const user = await this.repo.createUser(data);
+    if (!user) {
+      throw new Error('Failed to create user');
+    }
+    return this.generateToken(user);
+  }
+
+  async login(
+    email: string,
+    password: string,
+  ): Promise<authResponseDTO | null> {
+    const user = await this.repo.getUserByEmail(email.toLowerCase());
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const isPasswordValid = await compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error('User not found');
+    }
+    return this.generateToken(user);
+  }
+
+  private generateToken(user: User) {
+    const sessionId = v4();
+
+    const _accessTokenKey = `accessToken:${user?.id}:${sessionId}`;
+    const _refreshTokenKey = `refreshToken:${user?.id}:${sessionId}`;
+
+    const _accessTokenPayload = {
+      data: {
+        userId: user?.id,
+        sessionId,
+        key: _accessTokenKey,
+      },
+    };
+    const _refreshTokenPayload = {
+      data: {
+        userId: user?.id || 'Anonymous',
+        sessionId,
+        key: _refreshTokenKey,
+      },
+    };
+    const expiresInAccessToken = 24 * 60 * 60;
+    const expiresInRefreshToken = 30 * 60 * 60;
+
+    const _accessToken = this.jwtService.sign(_accessTokenPayload, {
+      expiresIn: expiresInAccessToken,
+      issuer: this.configService.get('API_JWT_ISSUER'),
+      secret: this.configService.get('API_JWT_SECRET'),
+    });
+
+    const _refreshToken = this.jwtService.sign(_refreshTokenPayload, {
+      expiresIn: expiresInRefreshToken,
+      issuer: this.configService.get('API_JWT_ISSUER'),
+      secret: this.configService.get('API_JWT_SECRET'),
+    });
+
+    void this.redis.hmset(_accessTokenKey, {
+      key: _accessTokenKey,
+      sessionId,
+      accessToken: _accessToken,
+    });
+
+    void this.redis.hmset(_refreshTokenKey, {
+      key: _refreshTokenKey,
+      sessionId,
+      refreshToken: _refreshToken,
+    });
+
+    void this.redis.expire(_accessTokenKey, expiresInAccessToken);
+    void this.redis.expire(_refreshTokenKey, expiresInRefreshToken);
+
+    return {
+      user,
+      accessToken: _accessToken,
+      refreshToken: _refreshToken,
+    };
   }
 }

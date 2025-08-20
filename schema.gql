@@ -46,11 +46,13 @@ type UserCount {
 type User {
   id: ID!
   email: String!
+
+  """@HideField"""
   password: String!
-  name: String
-  cardCount: Int!
+  name: String!
+  cardCount: Int
   tableId: String
-  turnId: String!
+  turnId: String
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -128,6 +130,12 @@ enum CardType {
   Polar
 }
 
+type authResponseDTO {
+  user: User
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   GetCards: [Card!]!
   GetCard(id: String!): Card!
@@ -135,6 +143,7 @@ type Query {
   GetCardInstance(id: String!): CardInstance!
   GetUsers: [User!]!
   GetUser(id: String!): User!
+  GetUserByEmail(email: String!): User!
   GetTurns: [Turn!]!
   GetTurn(id: String!): Turn!
   GetHands: [Hand!]!
@@ -153,6 +162,8 @@ type Mutation {
   DeleteUser(id: String!): User!
   UpdateUser(id: String!, data: UserUpdateInput!): User!
   CreateUser(data: UserUncheckedCreateInput!): User!
+  SignUp(data: signUpRequestDTO!): authResponseDTO!
+  Login(email: String!, password: String!): authResponseDTO!
   DeleteTurn(id: String!): Turn!
   UpdateTurn(id: String!, data: TurnUpdateInput!): Turn!
   CreateTurn(data: TurnUncheckedCreateInput!): Turn!
@@ -244,9 +255,9 @@ input UserCreateWithoutTableInput {
   id: String
   email: String!
   password: String!
-  name: String
+  name: String!
   cardCount: Int
-  turnId: String!
+  turnId: String
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -601,10 +612,10 @@ input UserWhereInput {
   id: UuidFilter
   email: StringFilter
   password: StringFilter
-  name: StringNullableFilter
-  cardCount: IntFilter
+  name: StringFilter
+  cardCount: IntNullableFilter
   tableId: StringNullableFilter
-  turnId: UuidFilter
+  turnId: UuidNullableFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
   deletedAt: DateTimeNullableFilter
@@ -635,6 +646,28 @@ input NestedUuidFilter {
   gt: String
   gte: String
   not: NestedUuidFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntNullableFilter
+}
+
+input NestedIntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntNullableFilter
 }
 
 input TurnNullableScalarRelationFilter {
@@ -723,9 +756,9 @@ input UserCreateWithoutHandsInput {
   id: String
   email: String!
   password: String!
-  name: String
+  name: String!
   cardCount: Int
-  turnId: String!
+  turnId: String
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -781,9 +814,9 @@ input UserCreateWithoutVisibleHandsInput {
   id: String
   email: String!
   password: String!
-  name: String
+  name: String!
   cardCount: Int
-  turnId: String!
+  turnId: String
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -854,9 +887,9 @@ input UserCreateWithoutTurnInput {
   id: String
   email: String!
   password: String!
-  name: String
+  name: String!
   cardCount: Int
-  turnId: String!
+  turnId: String
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -992,14 +1025,14 @@ input UserCreateOrConnectWithoutTurnInput {
 input UserWhereUniqueInput {
   id: String
   email: String
-  turnId: String
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   password: StringFilter
-  name: StringNullableFilter
-  cardCount: IntFilter
+  name: StringFilter
+  cardCount: IntNullableFilter
   tableId: StringNullableFilter
+  turnId: UuidNullableFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
   deletedAt: DateTimeNullableFilter
@@ -1170,9 +1203,9 @@ input UserCreateManyTableInput {
   id: String
   email: String!
   password: String!
-  name: String
+  name: String!
   cardCount: Int
-  turnId: String!
+  turnId: String
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -1280,15 +1313,23 @@ input UserUpdateWithoutTableInput {
   id: StringFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
-  name: NullableStringFieldUpdateOperationsInput
-  cardCount: IntFieldUpdateOperationsInput
-  turnId: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  cardCount: NullableIntFieldUpdateOperationsInput
+  turnId: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
   Turn: TurnUpdateOneWithoutUserNestedInput
   Hands: HandUpdateManyWithoutUserNestedInput
   visibleHands: HandUpdateManyWithoutViewerNestedInput
+}
+
+input NullableIntFieldUpdateOperationsInput {
+  set: Int
+  increment: Int
+  decrement: Int
+  multiply: Int
+  divide: Int
 }
 
 input TurnUpdateOneWithoutUserNestedInput {
@@ -1447,9 +1488,9 @@ input UserUpdateWithoutHandsInput {
   id: StringFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
-  name: NullableStringFieldUpdateOperationsInput
-  cardCount: IntFieldUpdateOperationsInput
-  turnId: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  cardCount: NullableIntFieldUpdateOperationsInput
+  turnId: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -1538,9 +1579,9 @@ input UserUpdateWithoutVisibleHandsInput {
   id: StringFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
-  name: NullableStringFieldUpdateOperationsInput
-  cardCount: IntFieldUpdateOperationsInput
-  turnId: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  cardCount: NullableIntFieldUpdateOperationsInput
+  turnId: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -1657,9 +1698,9 @@ input UserUpdateWithoutTurnInput {
   id: StringFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
-  name: NullableStringFieldUpdateOperationsInput
-  cardCount: IntFieldUpdateOperationsInput
-  turnId: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  cardCount: NullableIntFieldUpdateOperationsInput
+  turnId: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -1918,10 +1959,10 @@ input UserScalarWhereInput {
   id: UuidFilter
   email: StringFilter
   password: StringFilter
-  name: StringNullableFilter
-  cardCount: IntFilter
+  name: StringFilter
+  cardCount: IntNullableFilter
   tableId: StringNullableFilter
-  turnId: UuidFilter
+  turnId: UuidNullableFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
   deletedAt: DateTimeNullableFilter
@@ -1931,9 +1972,9 @@ input UserUpdateManyMutationInput {
   id: StringFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
-  name: NullableStringFieldUpdateOperationsInput
-  cardCount: IntFieldUpdateOperationsInput
-  turnId: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  cardCount: NullableIntFieldUpdateOperationsInput
+  turnId: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -2018,9 +2059,9 @@ input UserUpdateInput {
   id: StringFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
   password: StringFieldUpdateOperationsInput
-  name: NullableStringFieldUpdateOperationsInput
-  cardCount: IntFieldUpdateOperationsInput
-  turnId: StringFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  cardCount: NullableIntFieldUpdateOperationsInput
+  turnId: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -2034,10 +2075,10 @@ input UserUncheckedCreateInput {
   id: String
   email: String!
   password: String!
-  name: String
+  name: String!
   cardCount: Int
   tableId: String
-  turnId: String!
+  turnId: String
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -2064,6 +2105,12 @@ input HandUncheckedCreateNestedManyWithoutViewerInput {
   connectOrCreate: [HandCreateOrConnectWithoutViewerInput!]
   createMany: HandCreateManyViewerInputEnvelope
   connect: [HandWhereUniqueInput!]
+}
+
+input signUpRequestDTO {
+  email: String!
+  password: String!
+  name: String!
 }
 
 input TurnUpdateInput {
