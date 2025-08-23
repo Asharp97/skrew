@@ -6,6 +6,7 @@ import { UserUpdateInput } from 'types/user/user-update.input';
 import { UserUncheckedCreateInput } from 'types/user/user-unchecked-create.input';
 import { signUpRequestDTO } from './dto/signupRequest.dto';
 import { authResponseDTO } from './dto/authResponse.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Resolver()
 export class UserResolver {
@@ -54,11 +55,13 @@ export class UserResolver {
     return this.userService.getUserByEmail(email);
   }
 
+  @Public()
   @Mutation(() => authResponseDTO, { name: 'SignUp' })
   async signUp(@Args('data') data: signUpRequestDTO): Promise<authResponseDTO> {
     return this.userService.signUp(data);
   }
 
+  @Public()
   @Mutation(() => authResponseDTO, { name: 'Login' })
   async login(
     @Args('email', { type: () => String }) email: string,

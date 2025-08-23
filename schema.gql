@@ -73,8 +73,10 @@ type TableCount {
 type Table {
   id: ID!
   userId: String
+  adminId: String
   userCount: Int!
   status: TableStatus!
+  accessCode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
@@ -234,8 +236,10 @@ input TableCreateNestedOneWithoutCardInput {
 input TableCreateWithoutCardInput {
   id: String
   userId: String
+  adminId: String
   userCount: Int
   status: TableStatus
+  accessCode: String!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -289,8 +293,10 @@ input TableCreateNestedOneWithoutTurnInput {
 input TableCreateWithoutTurnInput {
   id: String
   userId: String
+  adminId: String
   userCount: Int
   status: TableStatus
+  accessCode: String!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -551,8 +557,10 @@ input TableWhereInput {
   NOT: [TableWhereInput!]
   id: StringFilter
   userId: UuidNullableFilter
+  adminId: UuidNullableFilter
   userCount: IntFilter
   status: EnumTableStatusFilter
+  accessCode: StringFilter
   createdAt: DateTimeFilter
   updatedAt: DateTimeFilter
   deletedAt: DateTimeNullableFilter
@@ -776,8 +784,10 @@ input TableCreateNestedOneWithoutUserInput {
 input TableCreateWithoutUserInput {
   id: String
   userId: String
+  adminId: String
   userCount: Int
   status: TableStatus
+  accessCode: String!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -852,8 +862,10 @@ input TableCreateNestedOneWithoutHandInput {
 input TableCreateWithoutHandInput {
   id: String
   userId: String
+  adminId: String
   userCount: Int
   status: TableStatus
+  accessCode: String!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -1081,10 +1093,12 @@ input TableCreateOrConnectWithoutHandInput {
 
 input TableWhereUniqueInput {
   id: String
+  accessCode: String
   AND: [TableWhereInput!]
   OR: [TableWhereInput!]
   NOT: [TableWhereInput!]
   userId: UuidNullableFilter
+  adminId: UuidNullableFilter
   userCount: IntFilter
   status: EnumTableStatusFilter
   createdAt: DateTimeFilter
@@ -1271,8 +1285,10 @@ input TableUpsertWithoutCardInput {
 input TableUpdateWithoutCardInput {
   id: StringFieldUpdateOperationsInput
   userId: NullableStringFieldUpdateOperationsInput
+  adminId: NullableStringFieldUpdateOperationsInput
   userCount: IntFieldUpdateOperationsInput
   status: EnumTableStatusFieldUpdateOperationsInput
+  accessCode: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -1375,8 +1391,10 @@ input TableUpsertWithoutTurnInput {
 input TableUpdateWithoutTurnInput {
   id: StringFieldUpdateOperationsInput
   userId: NullableStringFieldUpdateOperationsInput
+  adminId: NullableStringFieldUpdateOperationsInput
   userCount: IntFieldUpdateOperationsInput
   status: EnumTableStatusFieldUpdateOperationsInput
+  accessCode: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -1518,8 +1536,10 @@ input TableUpsertWithoutUserInput {
 input TableUpdateWithoutUserInput {
   id: StringFieldUpdateOperationsInput
   userId: NullableStringFieldUpdateOperationsInput
+  adminId: NullableStringFieldUpdateOperationsInput
   userCount: IntFieldUpdateOperationsInput
   status: EnumTableStatusFieldUpdateOperationsInput
+  accessCode: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -1640,8 +1660,10 @@ input TableUpsertWithoutHandInput {
 input TableUpdateWithoutHandInput {
   id: StringFieldUpdateOperationsInput
   userId: NullableStringFieldUpdateOperationsInput
+  adminId: NullableStringFieldUpdateOperationsInput
   userCount: IntFieldUpdateOperationsInput
   status: EnumTableStatusFieldUpdateOperationsInput
+  accessCode: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -2165,8 +2187,10 @@ input CardInstanceUncheckedCreateNestedManyWithoutHandInput {
 input TableUpdateInput {
   id: StringFieldUpdateOperationsInput
   userId: NullableStringFieldUpdateOperationsInput
+  adminId: NullableStringFieldUpdateOperationsInput
   userCount: IntFieldUpdateOperationsInput
   status: EnumTableStatusFieldUpdateOperationsInput
+  accessCode: StringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   deletedAt: NullableDateTimeFieldUpdateOperationsInput
@@ -2179,8 +2203,10 @@ input TableUpdateInput {
 input TableUncheckedCreateInput {
   id: String
   userId: String
+  adminId: String
   userCount: Int
   status: TableStatus
+  accessCode: String!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime

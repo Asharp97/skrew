@@ -12,9 +12,14 @@ import { TableModule } from './table/table.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
@@ -23,10 +28,9 @@ import { JwtModule } from '@nestjs/jwt';
         'subscriptions-transport-ws': true,
       },
       playground: process.env.NODE_ENV === 'development',
-      context: ({ req, res }) => ({ req, res }),
+      context: ({ req, res }: { req: unknown; res: unknown }) => ({ req, res }),
     }),
     RedisModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         config: {
@@ -37,14 +41,10 @@ import { JwtModule } from '@nestjs/jwt';
         },
       }),
     }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get('API_JWT_SECRET'),
-        issuer: configService.get('API_JWT_ISSUER'),
-        global: true,
-      }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.API_JWT_SECRET,
+      signOptions: { issuer: process.env.API_JWT_ISSUER },
     }),
     CardModule,
     CardInstanceModule,
@@ -54,6 +54,12 @@ import { JwtModule } from '@nestjs/jwt';
     TableModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

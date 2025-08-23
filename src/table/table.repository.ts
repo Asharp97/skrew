@@ -33,4 +33,8 @@ export class TableRepository {
   async createTable(data: Prisma.TableUncheckedCreateInput): Promise<Table> {
     return this.prisma.table.create({ data });
   }
+
+  getTableByAccessCode(accessCode: string): Promise<Table | null> {
+    return this.prisma.table.findUnique({ where: { accessCode } });
+  }
 }

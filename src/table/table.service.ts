@@ -25,6 +25,18 @@ export class TableService {
   }
 
   async createTable(data: Prisma.TableUncheckedCreateInput): Promise<Table> {
+    data.accessCode = Math.random().toString(36).substring(2, 8);
     return await this.repo.createTable(data);
+  }
+
+  async getTableByAccessCode(accessCode: string): Promise<Table | null> {
+    return await this.repo.getTableByAccessCode(accessCode);
+  }
+
+  async joinTable(accessCode: string): Promise<Table | null> {
+    //get user by token
+    //add user to table by updating table
+    //if admin
+    return await this.repo.getTableByAccessCode(accessCode);
   }
 }

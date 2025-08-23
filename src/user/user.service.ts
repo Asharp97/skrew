@@ -100,19 +100,18 @@ export class UserService {
         key: _refreshTokenKey,
       },
     };
-    const expiresInAccessToken = 24 * 60 * 60;
-    const expiresInRefreshToken = 30 * 60 * 60;
+
+    // const expiresInAccessToken = '7d';
+    // const expiresInRefreshToken = '30d';
+    const expiresInAccessToken = 7 * 24 * 60 * 60;
+    const expiresInRefreshToken = 30 * 24 * 60 * 60;
 
     const _accessToken = this.jwtService.sign(_accessTokenPayload, {
       expiresIn: expiresInAccessToken,
-      issuer: this.configService.get('API_JWT_ISSUER'),
-      secret: this.configService.get('API_JWT_SECRET'),
     });
 
     const _refreshToken = this.jwtService.sign(_refreshTokenPayload, {
       expiresIn: expiresInRefreshToken,
-      issuer: this.configService.get('API_JWT_ISSUER'),
-      secret: this.configService.get('API_JWT_SECRET'),
     });
 
     void this.redis.hmset(_accessTokenKey, {
