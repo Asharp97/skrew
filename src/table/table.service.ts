@@ -29,13 +29,9 @@ export class TableService {
     return await this.repo.createTable(data);
   }
 
-  async getTableByAccessCode(accessCode: string): Promise<Table | null> {
-    return await this.repo.getTableByAccessCode(accessCode);
-  }
-
   async joinTable(accessCode: string): Promise<Table | null> {
-    //get user by token
-    //add user to table by updating table
+    //get userId by token
+    //add userId to table by updating table
     //if admin
     return await this.repo.getTableByAccessCode(accessCode);
   }

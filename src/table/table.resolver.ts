@@ -1,9 +1,12 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { TableService } from './table.service';
 import { Table } from 'types/table/table.model';
 import { Prisma } from '@prisma/client';
 import { TableUpdateInput } from 'types/table/table-update.input';
 import { TableUncheckedCreateInput } from 'types/table/table-unchecked-create.input';
+interface GqlContext {
+  req: Request;
+}
 
 @Resolver()
 export class TableResolver {
@@ -40,6 +43,8 @@ export class TableResolver {
   @Mutation(() => Table, { name: 'CreateTable' })
   async createTable(
     @Args('data', { type: () => TableUncheckedCreateInput })
+    @Context()
+    context: GqlContext,
     data: Prisma.TableUncheckedCreateInput,
   ): Promise<Table> {
     return await this.tableService.createTable(data);

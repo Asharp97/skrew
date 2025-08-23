@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from 'types/user/user.model';
 import { Prisma } from '@prisma/client';
@@ -7,6 +7,10 @@ import { UserUncheckedCreateInput } from 'types/user/user-unchecked-create.input
 import { signUpRequestDTO } from './dto/signupRequest.dto';
 import { authResponseDTO } from './dto/authResponse.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { LogoutResponse } from './dto/logoutResponse.dto';
+interface GqlContext {
+  req: Request;
+}
 
 @Resolver()
 export class UserResolver {
@@ -68,5 +72,15 @@ export class UserResolver {
     @Args('password', { type: () => String }) password: string,
   ): Promise<authResponseDTO | null> {
     return this.userService.login(email, password);
+  }
+
+  @Mutation(() => LogoutResponse, { name: 'Logout' })
+  async logout(@Context() context: GqlContext): Promise<LogoutResponse> {
+    const accessToken: string =
+      context.req.headers['authorization']?.split(' ')[1];
+    if (!accessToken) {
+      throw new Error('Access token is missing');
+    }
+    return await this.userService.logout(accessToken);
   }
 }

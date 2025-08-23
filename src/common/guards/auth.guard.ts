@@ -9,16 +9,19 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import jwtConstants from 'src/middlewares/jwtConstants';
-// import { ConfigService } from '@nestjs/config';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly redis: Redis;
   constructor(
     private reflector: Reflector,
     private readonly jwtService: JwtService,
-    // private readonly configService: ConfigService,
-  ) {}
+    private readonly redisService: RedisService,
+  ) {
+    this.redis = this.redisService.getOrThrow();
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -36,10 +39,18 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
-    // console.log(request.headers);
 
     try {
       const payload = await this.jwtService.verifyAsync(token);
+      const sessionKey = payload.data?.key;
+      if (!sessionKey) {
+        throw new UnauthorizedException('Invalid token payload');
+      }
+
+      const sessionExists = await this.redis.exists(sessionKey);
+      if (!sessionExists) {
+        throw new UnauthorizedException('Session has been terminated');
+      }
       request['user'] = payload;
     } catch (err) {
       console.error(err);

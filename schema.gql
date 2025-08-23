@@ -138,6 +138,11 @@ type authResponseDTO {
   refreshToken: String!
 }
 
+type LogoutResponse {
+  success: Boolean!
+  message: String
+}
+
 type Query {
   GetCards: [Card!]!
   GetCard(id: String!): Card!
@@ -166,6 +171,7 @@ type Mutation {
   CreateUser(data: UserUncheckedCreateInput!): User!
   SignUp(data: signUpRequestDTO!): authResponseDTO!
   Login(email: String!, password: String!): authResponseDTO!
+  Logout: LogoutResponse!
   DeleteTurn(id: String!): Turn!
   UpdateTurn(id: String!, data: TurnUpdateInput!): Turn!
   CreateTurn(data: TurnUncheckedCreateInput!): Turn!

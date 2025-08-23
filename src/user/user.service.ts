@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 import { UserRepository } from './user.repository';
 import { hash, compare } from 'bcryptjs';
@@ -9,6 +9,7 @@ import { v4 } from 'uuid';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { Redis } from 'ioredis';
 import { authResponseDTO } from './dto/authResponse.dto';
+import { LogoutResponse } from './dto/logoutResponse.dto';
 
 @Injectable()
 export class UserService {
@@ -80,6 +81,29 @@ export class UserService {
     return this.generateToken(user);
   }
 
+  async logout(accessToken: string): Promise<LogoutResponse> {
+    try {
+      const payload = await this.jwtService.verifyAsync(accessToken);
+
+      const userId = payload.data?.userId;
+      const sessionId = payload.data?.sessionId;
+
+      if (!userId || !sessionId) {
+        throw new UnauthorizedException('Invalid token payload');
+      }
+
+      const accessTokenKey = `accessToken:${userId}:${sessionId}`;
+      const refreshTokenKey = `refreshToken:${userId}:${sessionId}`;
+
+      await this.redis.del(accessTokenKey, refreshTokenKey);
+
+      return { success: true, message: 'Logout successful' };
+    } catch (error) {
+      console.error('Logout failed:', error.message);
+      return { success: false, message: 'Logout failed' };
+    }
+  }
+
   private generateToken(user: User) {
     const sessionId = v4();
 
@@ -101,8 +125,6 @@ export class UserService {
       },
     };
 
-    // const expiresInAccessToken = '7d';
-    // const expiresInRefreshToken = '30d';
     const expiresInAccessToken = 7 * 24 * 60 * 60;
     const expiresInRefreshToken = 30 * 24 * 60 * 60;
 
