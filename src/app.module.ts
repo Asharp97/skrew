@@ -14,6 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { AuthGuard } from './common/guards/auth.guard';
       secret: process.env.API_JWT_SECRET,
       signOptions: { issuer: process.env.API_JWT_ISSUER },
     }),
+    ScheduleModule.forRoot(),
     CardModule,
     CardInstanceModule,
     UserModule,

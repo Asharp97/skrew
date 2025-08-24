@@ -8,9 +8,8 @@ import { signUpRequestDTO } from './dto/signupRequest.dto';
 import { authResponseDTO } from './dto/authResponse.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LogoutResponse } from './dto/logoutResponse.dto';
-interface GqlContext {
-  req: Request;
-}
+import { GqlContext } from 'src/common/types/gql-context.type';
+import extractTokenFromHeader from 'src/common/utils/extractTokenFromHeader';
 
 @Resolver()
 export class UserResolver {
@@ -76,8 +75,7 @@ export class UserResolver {
 
   @Mutation(() => LogoutResponse, { name: 'Logout' })
   async logout(@Context() context: GqlContext): Promise<LogoutResponse> {
-    const accessToken: string =
-      context.req.headers['authorization']?.split(' ')[1];
+    const accessToken = extractTokenFromHeader(context.req);
     if (!accessToken) {
       throw new Error('Access token is missing');
     }

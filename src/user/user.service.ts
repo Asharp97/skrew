@@ -157,4 +157,17 @@ export class UserService {
       refreshToken: _refreshToken,
     };
   }
+
+  getUserIdFromToken(token: string): string | null {
+    try {
+      const payload: { data: { userId: string } } =
+        this.jwtService.verify(token);
+      return payload.data?.userId || null;
+    } catch {
+      throw new Error('Invalid token');
+    }
+  }
+  async isUserInTable(tableId: string, userId: string): Promise<boolean> {
+    return await this.repo.isUserInTable(tableId, userId);
+  }
 }

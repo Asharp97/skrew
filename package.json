@@ -24,7 +24,7 @@
     "reset": "npx prisma migrate reset",
     "gen": "npx prisma generate",
     "op": "npx ts-node",
-    "sync": "npx prisma generate npx prisma db push --force-reset"
+    "sync": "npx prisma generate && npx prisma db push --force-reset"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",
@@ -53,6 +53,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@nestjs/schedule": "^6.0.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",

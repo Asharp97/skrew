@@ -37,4 +37,14 @@ export class UserRepository {
   async getUserByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findFirst({ where: { email, deletedAt: null } });
   }
+
+  async isUserInTable(tableId: string, userId: string): Promise<boolean> {
+    const count = await this.prisma.user.count({
+      where: {
+        id: userId,
+        tableId,
+      },
+    });
+    return count > 0;
+  }
 }

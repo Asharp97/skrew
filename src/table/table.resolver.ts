@@ -3,18 +3,22 @@ import { TableService } from './table.service';
 import { Table } from 'types/table/table.model';
 import { Prisma } from '@prisma/client';
 import { TableUpdateInput } from 'types/table/table-update.input';
-import { TableUncheckedCreateInput } from 'types/table/table-unchecked-create.input';
-interface GqlContext {
-  req: Request;
-}
+import { GqlContext } from 'src/common/types/gql-context.type';
+import extractTokenFromHeader from 'src/common/utils/extractTokenFromHeader';
 
 @Resolver()
 export class TableResolver {
   constructor(private readonly tableService: TableService) {}
 
   @Query(() => [Table], { name: 'GetTables' })
-  async getTables(): Promise<Table[]> {
-    return this.tableService.getTables();
+  async getTables(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.TableWhereUniqueInput;
+    where?: Prisma.TableWhereInput;
+    orderBy?: Prisma.TableOrderByWithRelationInput;
+  }): Promise<Table[]> {
+    return this.tableService.getTables(params);
   }
 
   @Query(() => Table, { name: 'GetTable' })
@@ -41,12 +45,41 @@ export class TableResolver {
   }
 
   @Mutation(() => Table, { name: 'CreateTable' })
-  async createTable(
-    @Args('data', { type: () => TableUncheckedCreateInput })
-    @Context()
-    context: GqlContext,
-    data: Prisma.TableUncheckedCreateInput,
-  ): Promise<Table> {
-    return await this.tableService.createTable(data);
+  async createTable(@Context() context: GqlContext): Promise<Table> {
+    const token = extractTokenFromHeader(context.req);
+    if (!token) throw new Error('Unauthorized');
+
+    return await this.tableService.createTable(token);
+  }
+
+  @Mutation(() => Table, { name: 'JoinTable' })
+  async joinTable(
+    @Args('accessCode', { type: () => String }) accessCode: string,
+    @Context() context: GqlContext,
+  ): Promise<Table | null> {
+    const token = extractTokenFromHeader(context.req);
+    if (!token) {
+      throw new Error('Unauthorized');
+    }
+    return await this.tableService.joinTable(accessCode, token);
+  }
+
+  @Mutation(() => Table, { name: 'LeaveTable' })
+  async leaveTable(@Context() context: GqlContext): Promise<Table | null> {
+    const token = extractTokenFromHeader(context.req);
+    if (!token) {
+      throw new Error('Unauthorized');
+    }
+    return await this.tableService.leaveTable(token);
+  }
+
+  @Mutation(() => Table, { name: 'StartGame' })
+  async startGame(@Context() context: GqlContext): Promise<Table | null> {
+    const token = extractTokenFromHeader(context.req);
+    if (!token) {
+      throw new Error('Unauthorized');
+    }
+
+    return await this.tableService.startGame(token);
   }
 }

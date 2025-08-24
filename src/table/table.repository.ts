@@ -6,8 +6,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TableRepository {
   constructor(private prisma: PrismaService) {}
 
-  async getTables(): Promise<Table[]> {
-    return this.prisma.table.findMany();
+  async getTables(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.TableWhereUniqueInput;
+    where?: Prisma.TableWhereInput;
+    orderBy?: Prisma.TableOrderByWithRelationInput;
+  }): Promise<Table[]> {
+    return this.prisma.table.findMany(params);
   }
 
   async getTable(id: string): Promise<Table | null> {
@@ -35,6 +41,20 @@ export class TableRepository {
   }
 
   getTableByAccessCode(accessCode: string): Promise<Table | null> {
-    return this.prisma.table.findUnique({ where: { accessCode } });
+    return this.prisma.table.findUnique({
+      where: { accessCode, deletedAt: null },
+    });
+  }
+
+  async isUserAdmin(userId: string, tableId: string): Promise<boolean> {
+    const count = await this.prisma.table.count({
+      where: { id: tableId, adminId: userId, deletedAt: null },
+    });
+    return count > 0;
+  }
+  async hardDeleteTable(id: string): Promise<Table | null> {
+    return this.prisma.table.delete({
+      where: { id },
+    });
   }
 }

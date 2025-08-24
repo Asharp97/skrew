@@ -89,7 +89,6 @@ model Turn {
 
 model Table {
   id         String         @id @default(uuid())
-  userId     String?        @db.Uuid
   adminId    String?        @db.Uuid
   user       User[]
   userCount  Int            @default(0)
@@ -97,7 +96,7 @@ model Table {
   Card       CardInstance[]
   hand       Hand[]
   Turn       Turn[]
-  accessCode String         @unique
+  accessCode String?         @unique
 
   createdAt DateTime  @default(now()) @db.Timestamptz
   updatedAt DateTime  @updatedAt @db.Timestamptz
