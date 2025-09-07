@@ -1,98 +1,108 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+````markdown
+# 🎮 Skrew – Real-Time Multiplayer Game Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**Skrew** is a fast-paced online multiplayer game built as a clone of an existing classic, reimagined with a modern backend architecture.  
+The project demonstrates my ability to design scalable, real-time systems using **GraphQL**, **NestJS**, and **WebSockets**.  
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🚀 Why Skrew?
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+In today’s gaming world, performance and scalability are everything. Skrew is not just a game clone—it’s a **tech showcase** of how to build a robust backend for real-time multiplayer experiences.  
 
-## Project setup
+- ⚡ **Real-time gameplay** powered by WebSockets  
+- 🕹️ **Seamless matchmaking** for online players  
+- 🔒 **Secure and scalable backend** using NestJS  
+- 🧩 **GraphQL API** for flexible data querying and future-proof integrations  
+- 🌍 **Built for scale** – the architecture can support more players and more features  
 
-```bash
-$ pnpm install
-```
+If you’re looking for an engineer who can build **complex, production-ready systems** that balance fun and performance—this is a glimpse of what I can deliver.
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ pnpm run start
+## 🛠️ Tech Stack
 
-# watch mode
-$ pnpm run start:dev
+- **Backend Framework**: [NestJS](https://nestjs.com/)  
+- **API**: [GraphQL](https://graphql.org/)  
+- **Real-Time Communication**: WebSockets  
+- **Database**: *(add what you used here – e.g. PostgreSQL, MongoDB, Redis, etc.)*  
+- **Auth & Session Management**: *(add if applicable)*  
 
-# production mode
-$ pnpm run start:prod
-```
+---
 
-## Run tests
+## 📂 Project Structure
 
 ```bash
-# unit tests
-$ pnpm run test
+skrew-backend/
+├── src/
+│   ├── modules/       # Game modules and business logic
+│   ├── gateway/       # WebSocket gateway for real-time gameplay
+│   ├── graphql/       # GraphQL schemas & resolvers
+│   ├── main.ts        # Entry point
+│   └── app.module.ts  # Root module
+├── package.json
+└── README.md
+````
 
-# e2e tests
-$ pnpm run test:e2e
+---
 
-# test coverage
-$ pnpm run test:cov
-```
+## ⚙️ Getting Started
 
-## Deployment
+### Prerequisites
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+* **Node.js (>=16)**
+* **npm** or **yarn**
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Installation
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# Clone the repo
+git clone https://github.com/asharp97/skrew.git
+
+cd skrew
+
+# Install dependencies
+npm install
+# or
+yarn install
+
+# Start development server
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+By default, the server runs at:
+👉 [http://localhost:3000/graphql](http://localhost:3000/graphql) for the GraphQL Playground.
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## 🕹️ How It Works
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+1. Players connect to the server via WebSockets.
+2. Matchmaking pairs players in real-time.
+3. Game state is synced across all connected clients instantly.
+4. GraphQL queries provide player stats, game history, and more.
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 🌟 Highlights
 
-## Stay in touch
+* 🔧 **Scalable Architecture**: Built with NestJS modules for maintainability.
+* 📡 **Real-Time State Syncing**: Ensures all players see the same game state with minimal lag.
+* 📊 **Analytics-Ready**: Extendable with GraphQL to track matches, scores, and players.
+* 🚀 **Portfolio-Ready**: A project designed to showcase skills in **backend engineering for games**.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 📜 License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is for educational and portfolio purposes.
+Not intended for commercial release.
+
+---
+
+## ✨ Author
+
+Built with ❤️ by **Ali Elsayed**
+🔗 [GitHub: asharp97](https://github.com/asharp97)
+
+```
