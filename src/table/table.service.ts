@@ -127,14 +127,14 @@ export class TableService {
     });
   }
 
-  tableExpirationTime = Number(process.env.table_expires_in);
+  tableExpirationTime = Number(process.env.table_expires_in) || 10 * 60 * 1000; // 10 minutes
   @Cron(CronExpression.EVERY_5_MINUTES)
   async purgeUnusedTables() {
-    const tenMinutesAgo = new Date(Date.now() - this.tableExpirationTime);
+    const expirationTime = new Date(Date.now() - this.tableExpirationTime);
     const waitingTables = await this.repo.getTables({
       where: {
         status: TableStatus.Waiting,
-        createdAt: { lt: tenMinutesAgo },
+        createdAt: { lt: expirationTime },
       },
     });
     const processes = waitingTables.map((table) => {

@@ -29,10 +29,10 @@ const cards = [
     value: 20,
     type: CardType.Polar,
   })),
-  ...Array.from({ length: 2 }, () => ({
+  {
     value: -1,
     type: CardType.Polar,
-  })),
+  },
   ...Array.from({ length: 2 }, () => ({
     value: 25,
     type: CardType.Polar,
@@ -41,6 +41,22 @@ const cards = [
     value: 0,
     type: CardType.Polar,
   })),
+  ...Array.from({ length: 4 }, () => ({
+    value: 0,
+    type: CardType.PingPong,
+  })),
+  ...Array.from({ length: 2 }, () => ({
+    value: 0,
+    type: CardType.AlaKeefak,
+  })),
+  {
+    value: 0,
+    type: CardType.SeeAndSwap,
+  },
+  {
+    value: 0,
+    type: CardType.TakeOnly,
+  },
 ];
 
 export default cards;

@@ -116,5 +116,9 @@ enum CardType {
   KhodWaHat
   KaabDayer
   Basra
+  AlaKeefak
+  TakeOnly
+  SeeAndSwap
+  PingPong
   Polar
 }

@@ -15,6 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { ScheduleModule } from '@nestjs/schedule';
+import { WebsocketsModule } from './websockets/websockets.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     TurnModule,
     HandModule,
     TableModule,
+    WebsocketsModule,
   ],
   controllers: [AppController],
   providers: [
